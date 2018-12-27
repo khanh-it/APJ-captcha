@@ -1,0 +1,55 @@
+<?php
+$colors = array();
+$pixels = array();
+$imgW = $image->width();
+$imgH = $image->height();
+// var_dump($imgW, $imgH); die();
+
+for ($x = 0; $x < $imgW; $x++) {
+    $colors[$x] = $colors[$x] ?? [];
+    $pixels[$x] = 0;
+    for ($y = 0; $y < $imgH; $y++) {
+        $colorInt = $image->pickColor($x, $y, 'int');
+        $isColorWhite = App\EA\Intervention\CaptchaAPJ::isColorWhite($colorInt);
+        $colorHex = $image->pickColor($x, $y, 'hex');
+        //
+        // $color = $isColorWhite ? '#' : ' ';
+        $color = "<i style=\"color:{$colorHex};\">" . ($isColorWhite ? '.' : '#') . "</i>";
+        $colors[$x][$y] = $color;
+        //
+        $pixels[$x] += 0;// ($isColorWhite ? 0 : 1);
+    }
+}
+?>
+<table>
+<thead>
+    <!--<tr>
+        <td colspan="100"><pre><?php print_r($rmLPixels[0]); ?></pre></td>
+    </tr>-->
+</thead>
+<tbody>
+<?php
+for ($y = 0; $y < $imgH; $y++):
+?>
+    <tr>
+<?php
+    for ($x = 0; $x < $imgW; $x++):
+?>
+<?php echo "<td>{$colors[$x][$y]}</td>"; ?>
+<?php
+    endfor; echo '</tr>';
+?>
+<?php
+endfor;
+?>
+</tbody>
+<tfoot>
+    <tr hidden>
+    <?php
+    for ($x = 0; $x < $imgW; $x++) {
+        echo "<td>{$pixels[$x]}</td>";
+    }
+    ?>
+    </tr>
+</tfoot>
+</table>
